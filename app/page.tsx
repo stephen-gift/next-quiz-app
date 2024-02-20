@@ -55,6 +55,7 @@ export default function Home({ title }: Props) {
                   quiz: JSON.stringify(quiz),
                 },
               }}
+              // as={`/quiz?title=${quiz.title}`}
               className="container flex-1 mb-10"
               // onClick={() => console.log(`Here is the subject:${quiz.title}`)}
             >
