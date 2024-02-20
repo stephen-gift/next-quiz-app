@@ -1,4 +1,4 @@
-"use client";
+// "use client";
 import Link from "next/link";
 import {
   FaChevronRight,
@@ -49,13 +49,14 @@ export default function Home({ title }: Props) {
             <Link
               key={index}
               href={{
-                pathname: `/quiz/subject`,
+                pathname: `/quiz`,
                 query: {
-                  subject: quiz.title,
+                  title: quiz.title,
+                  quiz: JSON.stringify(quiz),
                 },
               }}
               className="container flex-1 mb-10"
-              onClick={() => console.log(`Here is the subject:${quiz.title}`)}
+              // onClick={() => console.log(`Here is the subject:${quiz.title}`)}
             >
               <Button className="container justify-between group">
                 {icon}
