@@ -20,7 +20,10 @@ const page = (props: Props) => {
     currentQuizIndex,
     setCurrentQuizIndex,
     // correctAnswersCount,
-    incrementCorrectAnswersCount,
+    // incrementCorrectAnswersCount,
+    addToTotalScore,
+    totalScore,
+    resetTotalScore,
   } = useQuizStore();
 
   const handleOptionClick = (option: string) => {
@@ -38,7 +41,7 @@ const page = (props: Props) => {
 
     if (option === correctAnswer && !selectedOptions[currentQuizIndex]) {
       setCorrectAnswersCount((prevCount) => prevCount + 1);
-    } 
+    }
   };
 
   const handleNextQuestion = () => {
@@ -61,6 +64,27 @@ const page = (props: Props) => {
     // setIsCorrect(null);
   };
 
+  //   const handleQuizSubmit = () => {
+  //     addToTotalScore(correctAnswersCount);
+  //   };
+
+  const handleQuizSubmit = () => {
+    // Calculate correct answers count based on selected options
+    const newCorrectAnswersCount = Object.values(selectedOptions).reduce(
+      (count, option, index) => {
+        const correctAnswer = selectedTitleObject?.questions[index].answer;
+        if (option === correctAnswer) {
+          return count + 1;
+        }
+        return count;
+      },
+      0
+    );
+
+    // Update total score with the calculated correct answers count
+    addToTotalScore(newCorrectAnswersCount);
+  };
+
   // Function to convert index to option letter (A, B, C, D)
   const indexToLetter = (index: number) => {
     return String.fromCharCode(65 + index);
@@ -75,6 +99,9 @@ const page = (props: Props) => {
     setCurrentQuizIndex(0);
     setCorrectAnswersCount(0);
     setSelectedOptions({});
+    setIsCorrect(null);
+    setCorrectAnswersCount(0);
+    resetTotalScore(); // Reset submitted score when changing questions
   }, []);
 
   return (
@@ -136,10 +163,12 @@ const page = (props: Props) => {
                 )}
 
                 {currentQuizIndex === questionsLength - 1 && (
-                  <Button className="w-full">Submit</Button>
+                  <Button className="w-full" onClick={handleQuizSubmit}>
+                    Submit
+                  </Button>
                 )}
               </div>
-              <p>Correct Answers: {correctAnswersCount}</p>
+              <p>Correct Answers: {totalScore}</p>
             </div>
           </main>
         )}
