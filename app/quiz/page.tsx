@@ -64,26 +64,26 @@ const page = (props: Props) => {
     // setIsCorrect(null);
   };
 
-  //   const handleQuizSubmit = () => {
-  //     addToTotalScore(correctAnswersCount);
-  //   };
+    const handleQuizSubmit = () => {
+      addToTotalScore(correctAnswersCount);
+    };
 
-  const handleQuizSubmit = () => {
-    // Calculate correct answers count based on selected options
-    const newCorrectAnswersCount = Object.values(selectedOptions).reduce(
-      (count, option, index) => {
-        const correctAnswer = selectedTitleObject?.questions[index].answer;
-        if (option === correctAnswer) {
-          return count + 1;
-        }
-        return count;
-      },
-      0
-    );
+//   const handleQuizSubmit = () => {
+//     // Calculate correct answers count based on selected options
+//     const newCorrectAnswersCount = Object.values(selectedOptions).reduce(
+//       (count, option, index) => {
+//         const correctAnswer = selectedTitleObject?.questions[index].answer;
+//         if (option === correctAnswer) {
+//           return count + 1;
+//         }
+//         return count;
+//       },
+//       0
+//     );
 
-    // Update total score with the calculated correct answers count
-    addToTotalScore(newCorrectAnswersCount);
-  };
+//     // Update total score with the calculated correct answers count
+//     addToTotalScore(newCorrectAnswersCount);
+//   };
 
   // Function to convert index to option letter (A, B, C, D)
   const indexToLetter = (index: number) => {
