@@ -10,6 +10,18 @@ type Props = {};
 const page = (props: Props) => {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
+  const [correctAnswersCount, setCorrectAnswersCount] = useState<number>(0);
+  const [selectedOptions, setSelectedOptions] = useState<
+    Record<number, string>
+  >({});
+
+  const {
+    selectedTitleObject,
+    currentQuizIndex,
+    setCurrentQuizIndex,
+    // correctAnswersCount,
+    incrementCorrectAnswersCount,
+  } = useQuizStore();
 
   const handleOptionClick = (option: string) => {
     // Update the selected option
@@ -17,11 +29,17 @@ const page = (props: Props) => {
     // Check if the selected option is correct
     const correctAnswer =
       selectedTitleObject?.questions[currentQuizIndex].answer;
-    setIsCorrect(option === correctAnswer);
-  };
 
-  const { selectedTitleObject, currentQuizIndex, setCurrentQuizIndex } =
-    useQuizStore();
+    setIsCorrect(option === correctAnswer);
+    setSelectedOptions((prevOptions) => ({
+      ...prevOptions,
+      [currentQuizIndex]: option,
+    }));
+
+    if (option === correctAnswer && !selectedOptions[currentQuizIndex]) {
+      setCorrectAnswersCount((prevCount) => prevCount + 1);
+    } 
+  };
 
   const handleNextQuestion = () => {
     // Reset selected option and correctness state
@@ -38,9 +56,9 @@ const page = (props: Props) => {
       setCurrentQuizIndex(currentQuizIndex - 1);
     }
 
-    // Reset selected option and correctness state
-    setSelectedOption(null);
-    setIsCorrect(null);
+    // // Reset selected option and correctness state
+    // setSelectedOption(null);
+    // setIsCorrect(null);
   };
 
   // Function to convert index to option letter (A, B, C, D)
@@ -55,6 +73,8 @@ const page = (props: Props) => {
   // Initialize currentIndex to 0 when the component mounts
   useEffect(() => {
     setCurrentQuizIndex(0);
+    setCorrectAnswersCount(0);
+    setSelectedOptions({});
   }, []);
 
   return (
@@ -109,7 +129,7 @@ const page = (props: Props) => {
                   <Button
                     className="w-full mb-5"
                     onClick={handleNextQuestion}
-                    disabled={currentQuizIndex === questionsLength - 1}
+                    disabled={selectedOption === null}
                   >
                     Next
                   </Button>
@@ -119,6 +139,7 @@ const page = (props: Props) => {
                   <Button className="w-full">Submit</Button>
                 )}
               </div>
+              <p>Correct Answers: {correctAnswersCount}</p>
             </div>
           </main>
         )}
