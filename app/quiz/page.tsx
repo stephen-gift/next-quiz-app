@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useQuizStore } from "@/store";
@@ -8,15 +8,26 @@ import { useQuizStore } from "@/store";
 type Props = {};
 
 const page = (props: Props) => {
-  const {
-    selectedTitle,
-    selectedTitleObject,
-    currentQuizIndex,
-    setCurrentQuizIndex,
-  } = useQuizStore();
-  const searchParams = useSearchParams();
+  const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
+
+  const handleOptionClick = (option: string) => {
+    // Update the selected option
+    setSelectedOption(option);
+    // Check if the selected option is correct
+    const correctAnswer =
+      selectedTitleObject?.questions[currentQuizIndex].answer;
+    setIsCorrect(option === correctAnswer);
+  };
+
+  const { selectedTitleObject, currentQuizIndex, setCurrentQuizIndex } =
+    useQuizStore();
 
   const handleNextQuestion = () => {
+    // Reset selected option and correctness state
+    setSelectedOption(null);
+    setIsCorrect(null);
+
     // Increment the current quiz index
     setCurrentQuizIndex(currentQuizIndex + 1);
   };
@@ -26,6 +37,10 @@ const page = (props: Props) => {
     if (currentQuizIndex > 0) {
       setCurrentQuizIndex(currentQuizIndex - 1);
     }
+
+    // Reset selected option and correctness state
+    setSelectedOption(null);
+    setIsCorrect(null);
   };
 
   // Function to convert index to option letter (A, B, C, D)
@@ -59,8 +74,17 @@ const page = (props: Props) => {
               <ul className="">
                 {selectedTitleObject.questions[currentQuizIndex].options.map(
                   (option, index) => (
-                    <li className="mb-5">
-                      <Button className="container flex justify-start items-center gap-3">
+                    <li className="mb-5" key={index}>
+                      <Button
+                        className={`container flex justify-start items-center gap-3 ${
+                          selectedOption === option
+                            ? isCorrect
+                              ? "bg-green-500"
+                              : "bg-red-500"
+                            : ""
+                        }`}
+                        onClick={() => handleOptionClick(option)}
+                      >
                         {/* Render option letter (A, B, C, D) */}
                         {indexToLetter(index)}. {"  "}
                         {option}
