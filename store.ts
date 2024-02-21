@@ -1,14 +1,17 @@
 import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
-import { QuizData } from "./types";
+import { Quiz, QuizDataTypes } from "./types";
 
 // import type {} from '@redux-devtools/extension' // required for devtools typing
 
 export interface QuizStore {
   currentQuizIndex: number;
   setCurrentQuizIndex: (index: number) => void;
-  quizData: QuizData | null;
-  setQuizData: (data: QuizData) => void;
+  quizData: QuizDataTypes | null;
+  setQuizData: (data: QuizDataTypes) => void;
+  selectedTitle: string | null;
+  setSelectedTitle: (title: string | null) => void;
+  selectedTitleObject: Quiz | null;
 }
 
 export const useQuizStore = create<QuizStore>()(
@@ -19,7 +22,21 @@ export const useQuizStore = create<QuizStore>()(
         setCurrentQuizIndex: (index: number) =>
           set({ currentQuizIndex: index }),
         quizData: null,
-        setQuizData: (data: QuizData) => set({ quizData: data }),
+        setQuizData: (data: QuizDataTypes) => set({ quizData: data }),
+        selectedTitle: null,
+        setSelectedTitle: (title: string | null) => {
+          set({ selectedTitle: title });
+          // Find the corresponding quiz object based on the selected title
+          if (title && get().quizData) {
+            const selectedQuiz = get().quizData?.quizzes.find(
+              (quiz) => quiz.title === title
+            );
+            set({ selectedTitleObject: selectedQuiz || null });
+          } else {
+            set({ selectedTitleObject: null });
+          }
+        },
+        selectedTitleObject: null,
       }),
       {
         name: "quiz-storage",

@@ -10,6 +10,6 @@ export interface Quiz {
     answer: string;
   }
   
-  export interface QuizData {
+  export interface QuizDataTypes {
     quizzes: Quiz[];
   }
