@@ -12,6 +12,8 @@ export interface QuizStore {
   selectedTitle: string | null;
   setSelectedTitle: (title: string | null) => void;
   selectedTitleObject: Quiz | null;
+  correctAnswersCount: number;
+  incrementCorrectAnswersCount: () => void;
 }
 
 export const useQuizStore = create<QuizStore>()(
@@ -37,6 +39,11 @@ export const useQuizStore = create<QuizStore>()(
           }
         },
         selectedTitleObject: null,
+        correctAnswersCount: 0,
+        incrementCorrectAnswersCount: () =>
+          set((state) => ({
+            correctAnswersCount: state.correctAnswersCount + 1,
+          })),
       }),
       {
         name: "quiz-storage",
